@@ -31,7 +31,6 @@ Usage of gentplmode:
   -template_path string
         custom template file path
   -drive_engine string
-
         format the data structure to the corresponding database engine
 
 ```
@@ -45,9 +44,21 @@ Usage of gentplmode:
 ```
 gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" 
 ```
-也可以生成指定表，使用 `-table_names` 指定想生成的表    
+生成指定表，使用 `-table_names`
+```
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user
+```
+格式指定数据格式，使用 `-drive_engine`    
+```
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm
+```
+指定生成目录，使用 `-dir`    
 ```
 gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm -dir=./model
+```
+按指定模板生成，使用 `-template_path`    
+```
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm -dir=./model -template_path=../../test/test_template.tml
 ```
 
 ### PostgreSql
@@ -56,17 +67,24 @@ gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_name
 ```
 gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable"
 ```
-使用 `-table_names` 指定想生成的表    
+生成指定表，使用 `-table_names`   
 ```
-gentplmode -target=pg -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=db -dir=./model
+gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user
 ```
-
+格式指定数据格式，使用 `-drive_engine`  
+```
+gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user -drive_engine=db
+```
+指定生成目录，使用 `-dir`   
+```
+gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user -drive_engine=db -dir=./model
+```
 自定义 template 使用 `-template_path` 自定义模板 
 ```
-gentplmode  -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -package_name=db_model -template_path=../../test/test_template.tml 
+gentplmode  -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -package_name=db_model -drive_engine=db -dir=./model -template_path=../../test/test_template.tml 
 ```
 
-自定义 template 列子参考：
+自定义模板 template 列子参考：
 ```
 package templates
 
