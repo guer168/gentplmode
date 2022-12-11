@@ -36,6 +36,17 @@ func (t TableMetaData) Imports() []string {
 	return rev
 }
 
+func (t TableMetaData) Fields(index int) string {
+	rev := ""
+	for idx, item := range t.Columns {
+		if idx == index{
+			rev = item.Name
+			break
+		}
+	}
+	return rev
+}
+
 func (t TableMetaData) ColumnsNameWithPrefixAndIgnoreColumn(col string, prefix string) string {
 	rev := ""
 	for _, item := range t.Columns {
