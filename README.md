@@ -1,4 +1,8 @@
 [中文简介](README.md)    
+<<<<<<< HEAD
+=======
+[English](README_US.md)
+>>>>>>> 05d83e83cbae7de9e826504feecc8fc26269669f
 
 gentplmode 把数据库的表转换成`go`语言的`struct`，支持 `PostgreSQL`, `MySQL`    
 
@@ -7,11 +11,14 @@ gentplmode 把数据库的表转换成`go`语言的`struct`，支持 `PostgreSQL
 ```
 GO111MODULE=on go get -u github.com/guer168/gentplmode/cmd/gentplmode
 ```
+<<<<<<< HEAD
 ## 卸载 
 卸载 `gentplmode`.
 ```
 go clean -i github.com/guer168/gentplmode/cmd/gentplmode
 ```
+=======
+>>>>>>> 05d83e83cbae7de9e826504feecc8fc26269669f
 ### 帮助
 ```
 gentplmode -help 
@@ -30,7 +37,11 @@ Usage of gentplmode:
         mysql postgresql[pg] (default "postgresql")
   -template_path string
         custom template file path
+<<<<<<< HEAD
   -drive_engine string
+=======
+  -formatDriveEngine string
+>>>>>>> 05d83e83cbae7de9e826504feecc8fc26269669f
         format the data structure to the corresponding database engine
 
 ```
@@ -46,7 +57,11 @@ gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test"
 ```
 也可以生成指定表，使用 `-table_names` 指定想生成的表    
 ```
+<<<<<<< HEAD
 gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm -dir=./model
+=======
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user
+>>>>>>> 05d83e83cbae7de9e826504feecc8fc26269669f
 ```
 
 ### PostgreSql
@@ -57,7 +72,11 @@ gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable"
 ```
 使用 `-table_names` 指定想生成的表    
 ```
+<<<<<<< HEAD
 gentplmode -target=pg -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=db -dir=./model
+=======
+gentplmode -target=pg -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user
+>>>>>>> 05d83e83cbae7de9e826504feecc8fc26269669f
 ```
 
 自定义 template 使用 `-template_path` 自定义模板 
