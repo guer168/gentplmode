@@ -1,20 +1,19 @@
 [中文简介](README.md)    
 [English](README_US.md)
 
-yggdrasill 把数据库的表转换成`go`语言的`struct`，支持 `PostgreSQL`, `MySQL`    
-eg:    
-![generat model](/gen.gif)
+gentplmode 把数据库的表转换成`go`语言的`struct`，支持 `PostgreSQL`, `MySQL`    
+
 ## 安装 
 安装到`GOPATH`的 `bin`目录.
 ```
-GO111MODULE=on go get -u github.com/lpxxn/yggdrasill/cmd/yggdrasill
+GO111MODULE=on go get -u github.com/guer168/gentplmode/cmd/gentplmode
 ```
 ### 帮助
 ```
-yggdrasill -help 
+gentplmode -help 
 ```
 ```
-Usage of yggdrasill:
+Usage of gentplmode:
   -dir string
         Destination dir for files generated. (default "./tmp")
   -dsn string
@@ -39,27 +38,27 @@ Usage of yggdrasill:
 `-target`为 `mysql`
 默认生成数据库内的所有表
 ```
-yggdrasill -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" 
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" 
 ```
 也可以生成指定表，使用 `-table_names` 指定想生成的表    
 ```
-yggdrasill -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user
 ```
 
 ### PostgreSql
 `-target` 为 `postgresql`或者`pg`
 默认生成数据库内的所有表
 ```
-yggdrasill -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable"
+gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable"
 ```
 使用 `-table_names` 指定想生成的表    
 ```
-yggdrasill -target=pg -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user
+gentplmode -target=pg -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user
 ```
 
 自定义 template 使用 `-template_path` 自定义模板 
 ```
-yggdrasill  -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -package_name=db_model -template_path=../../test/test_template.tml 
+gentplmode  -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -package_name=db_model -template_path=../../test/test_template.tml 
 ```
 
 自定义 template 列子参考：
