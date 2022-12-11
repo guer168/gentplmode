@@ -7,6 +7,11 @@ gentplmode 把数据库的表转换成`go`语言的`struct`，支持 `PostgreSQL
 ```
 GO111MODULE=on go get -u github.com/guer168/gentplmode/cmd/gentplmode
 ```
+## 卸载 
+卸载 `gentplmode`.
+```
+go clean -i github.com/guer168/gentplmode/cmd/gentplmode
+```
 ### 帮助
 ```
 gentplmode -help 
