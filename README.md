@@ -1,5 +1,4 @@
 [中文简介](README.md)    
-[English](README_US.md)
 
 gentplmode 把数据库的表转换成`go`语言的`struct`，支持 `PostgreSQL`, `MySQL`    
 
