@@ -24,9 +24,6 @@ func (t TableMetaData) Imports() []string {
 			imports[columnType] = v
 			continue
 		}
-		if column.FormatDriveEngine == "gorm" {
-			imports["github.com/jinzhu/gorm"] = "github.com/jinzhu/gorm"
-		}
 		switch columnType {
 		case "time.Time":
 			imports["time.Time"] = "time"

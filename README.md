@@ -54,11 +54,11 @@ gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_name
 ```
 指定生成目录，使用 `-dir`    
 ```
-gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm -dir=./model
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm -dir="./model"
 ```
 按指定模板生成，使用 `-template_path`    
 ```
-gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm -dir=./model -template_path=../../test/test_template.tml
+gentplmode -target=mysql -dsn="root:123456@tcp(127.0.0.1:3306)/test" -table_names=employee -table_names=user -drive_engine=gorm -dir="./model" -template_path="D:/test/test_template.tpl"
 ```
 
 ### PostgreSql
@@ -77,11 +77,11 @@ gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -t
 ```
 指定生成目录，使用 `-dir`   
 ```
-gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user -drive_engine=db -dir=./model
+gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user -drive_engine=db -dir="./model"
 ```
 自定义 template 使用 `-template_path` 自定义模板 
 ```
-gentplmode  -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -package_name=db_model -drive_engine=db -dir=./model -template_path=../../test/test_template.tml 
+gentplmode  -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -package_name=db_model -drive_engine=db -dir="./model" -template_path="D:/test/test_template.tpl" 
 ```
 
 自定义模板 template 列子参考：
@@ -113,7 +113,6 @@ type {{$structName}} struct {
 
 // TableName
 //  @Description: Getting the table name
-//  @receiver {{$firstChar}}
 //  @return string
 func ({{param "packageName"}} *{{$structName}}) TableName() string {
 	return "{{.Name}}"

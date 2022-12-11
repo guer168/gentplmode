@@ -27,7 +27,7 @@ type {{$structName}} struct {
 //  @Description: Getting the table name
 //  @receiver {{$firstChar}}
 //  @return string
-func ({{param "packageName"}} *{{$structName}}) TableName() string {
+func ({{param "packageName"}}) TableName() string {
 	return "{{.Name}}"
 }
 `
