@@ -39,4 +39,5 @@ func ({{param "packageName"}} *{{$structName }}) TableName() string {
 //{{$firstChar} 数据表首字母
 //{{$structName}} 结构体名
 //{{$camelizeStructName}} 首字母小写结构体名
-//{{.Fields 0}} 获取字段下标0的字段名，其它字段把0换成对应下标值
+//{{.FieldName 0}} 获取字段下标0的字段名，其它字段把0换成对应下标值
+//{{.FieldType 0}} 获取字段下标0的字段类型，其它字段把0换成对应下标值

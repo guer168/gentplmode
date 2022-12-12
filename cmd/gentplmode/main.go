@@ -3,10 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/guer168/gentplmode/code_gen"
 	"github.com/guer168/gentplmode/code_gen/templates"
 	"github.com/guer168/gentplmode/db_meta_data"
 	"github.com/guer168/gentplmode/utils"
+	"os"
+	"strings"
 )
 
 var (
@@ -44,7 +47,7 @@ func init() {
 
 func main() {
 	flag.Parse()
-	utils.CleanUpGenFiles(destDir)
+	//utils.CleanUpGenFiles(destDir)
 	utils.MkdirPathIfNotExist(destDir)
 	dbMetaData, err := code_gen.NewDbCodeGen(target)
 	if err != nil {
@@ -78,6 +81,29 @@ func main() {
 		return
 	}
 	for _, item := range tables {
+		pwd,_ := os.Getwd()
+		fmt.Println(pwd)
+		newPwd :=strings.Replace(pwd, "\\", "/", -1)
+		FilePath := newPwd+"/"+destDir+"/"+item.Name+".go"
+		res := utils.FileIsExist(FilePath)
+		if res == true{
+			color.Blue("\nFile already exists whether need to overwrite! Please enter (N/y):")
+			overwriteType := ""
+			fmt.Scanln(&overwriteType)
+			if overwriteType == ""{
+				overwriteType = "n"
+			}
+			overwriteType = strings.ToLower(overwriteType)
+			if overwriteType == "n" {
+				fmt.Printf("generate quit !!!!!!")
+				return
+			}else{
+				utils.CleanUpGenFiles(destDir)
+				utils.MkdirPathIfNotExist(destDir)
+			}
+		}
+
+
 		body, err := code_gen.GenerateTemplate(temp.GetTemplate(), item, map[string]interface{}{
 			"packageName": packageName,
 		})
@@ -93,5 +119,5 @@ func main() {
 			return
 		}
 	}
-	fmt.Println("generate finished...")
+	fmt.Println("generate finished !!!!")
 }

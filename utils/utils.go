@@ -218,3 +218,20 @@ func FileExists(name string) (bool, error) {
 	}
 	return true, nil
 }
+
+// FileIsExist
+//  @Description: Check file exists
+//  @param fieldPath
+//  @return bool
+func FileIsExist(fieldPath string) bool {
+	_, err := os.Stat(fieldPath)
+	if err == nil{
+		//fmt.Println("File exist")
+		return true
+	}
+	if os.IsNotExist(err){
+		//fmt.Println("File not exist")
+		return false
+	}
+	return false
+}
