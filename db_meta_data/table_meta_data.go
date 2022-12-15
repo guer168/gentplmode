@@ -138,5 +138,5 @@ func (c ColumnMetaData) getGoType() string {
 	}
 }
 func (c ColumnMetaData) Tag() string {
-	return fmt.Sprintf("`%s:\"%s\" json:\"%s\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
+	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
 }
