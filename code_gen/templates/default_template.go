@@ -15,7 +15,6 @@ import (
 {{end}}
 
 {{$structName := CamelizeStr .Name true}}
-
 type {{$structName}} struct {
 {{- range .Columns}}
 	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + `

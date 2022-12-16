@@ -70,6 +70,18 @@ func (t TableMetaData) FieldType(index int) string {
 	return rev
 }
 
+// Replace
+//  @Description: 替换字符串
+//  @receiver t
+//  @param s
+//  @param oldStr
+//  @param newStr
+//  @param n
+//  @return string
+func (t TableMetaData) Replace(s string, oldStr string, newStr string, n int) string {
+	return strings.Replace(s, oldStr, newStr, n)
+}
+
 func (t TableMetaData) ColumnsNameWithPrefixAndIgnoreColumn(col string, prefix string) string {
 	rev := ""
 	for _, item := range t.Columns {
@@ -149,7 +161,6 @@ func (c ColumnMetaData) getGoType() string {
 		return "string"
 	}
 }
-
 
 func (c ColumnMetaData) Tag() string {
 	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
