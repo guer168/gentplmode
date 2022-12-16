@@ -2,6 +2,7 @@ package db_meta_data
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/guer168/gentplmode/utils"
@@ -11,6 +12,7 @@ type TableMetaData struct {
 	Name    string
 	Columns ColumnMetaDataList
 }
+var tableMetaData *TableMetaData
 
 type TableMetaDataList []*TableMetaData
 
@@ -36,6 +38,11 @@ func (t TableMetaData) Imports() []string {
 	return rev
 }
 
+// FieldName
+//  @Description: 获取字段名称
+//  @receiver t
+//  @param index	字段下标
+//  @return string
 func (t TableMetaData) FieldName(index int) string {
 	rev := ""
 	for idx, item := range t.Columns {
@@ -47,6 +54,11 @@ func (t TableMetaData) FieldName(index int) string {
 	return rev
 }
 
+// FieldType
+//  @Description: 获取字段类型
+//  @receiver t
+//  @param index	字段下标
+//  @return string
 func (t TableMetaData) FieldType(index int) string {
 	rev := ""
 	for idx, item := range t.Columns {
@@ -137,6 +149,85 @@ func (c ColumnMetaData) getGoType() string {
 		return "string"
 	}
 }
+
+
 func (c ColumnMetaData) Tag() string {
+	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
+}
+
+// TagSetDbStr
+//  @Description: 设置db扩展参数
+//  @receiver c
+//  @param indexNums	下标字符串 如 0,1,2
+//  @param dbStr		db扩展字符串
+//  @return string
+func (c ColumnMetaData) TagSetDbStr(indexNums string, dbStr string) string {
+	indexArr := strings.Split(indexNums,",")
+	currFieldName := ""
+	isSetStr := false
+	for _,v := range indexArr {
+		indexInt,_ := strconv.Atoi(v)
+		currFieldName = tableMetaData.FieldName(indexInt)
+		if(currFieldName == c.Name){
+			isSetStr = true
+			break
+		}
+	}
+
+	if isSetStr == true{
+		return fmt.Sprintf("`%s:\"%s%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, dbStr, utils.CamelizeStr(c.Name, false))
+	}
+
+	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
+}
+
+// TagSetJsonStr
+//  @Description: 设置json扩展参数
+//  @receiver c
+//  @param indexNums	下标字符串 如 0,1,2
+//  @param jsonStr		json扩展字符串
+//  @return string
+func (c ColumnMetaData) TagSetJsonStr(indexNums string, jsonStr string) string {
+	indexArr := strings.Split(indexNums,",")
+	currFieldName := ""
+	isSetStr := false
+	for _,v := range indexArr {
+		indexInt,_ := strconv.Atoi(v)
+		currFieldName = tableMetaData.FieldName(indexInt)
+		if(currFieldName == c.Name){
+			isSetStr = true
+			break
+		}
+	}
+
+	if isSetStr == true{
+		return fmt.Sprintf("`%s:\"%s\" json:\"%s%s\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false), jsonStr)
+	}
+	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
+}
+
+// TagSetDbJsonStr
+//  @Description: 设置db和json扩展参数
+//  @receiver c
+//  @param indexNums	下标字符串 如 0,1,2
+//  @param dbStr		db扩展字符串
+//  @param jsonStr		json扩展字符串
+//  @return string
+func (c ColumnMetaData) TagSetDbJsonStr(indexNums string, dbStr string, jsonStr string) string {
+	indexArr := strings.Split(indexNums,",")
+	currFieldName := ""
+	isSetStr := false
+	for _,v := range indexArr {
+		indexInt,_ := strconv.Atoi(v)
+		currFieldName = tableMetaData.FieldName(indexInt)
+		if(currFieldName == c.Name){
+			isSetStr = true
+			break
+		}
+	}
+
+	if isSetStr == true{
+		return fmt.Sprintf("`%s:\"%s%s\" json:\"%s%s\"`", c.FormatDriveEngine, c.Name, dbStr, utils.CamelizeStr(c.Name, false), jsonStr)
+	}
 	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
 }
