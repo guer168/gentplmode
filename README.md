@@ -130,13 +130,19 @@ func ({{$firstChar}} *{{$structName}}) TableName() string {
 
 参考变量：
 ```
-{{param "packageName"}} 包名
+{{param "packageName"}}、{{$packageName}} 包名
+
+{{$packageNameFirstUpper}} 首字符大写包名
 
 {{.Name}} 数据表原名
 
 {{$firstChar}} 数据表首字母
 
 {{$structName}} 结构体名
+
+{{$unPreTableName}} 无前缀表名
+
+{{$unPreTableNameFirstUpper}} 无前缀表名首字母大写
 
 {{$camelizeStructName}} 首字母小写结构体名
 
@@ -160,4 +166,8 @@ func ({{$firstChar}} *{{$structName}}) TableName() string {
 {{Add int int}} 加法 参数1：数字 参数2: 数字	
 
 {{now}} 获取当前时间
+
+{{.FieldName int}} 获取字段下标n的字段名 参数1：其它字段把n换成对应下标值
+
+{{.FieldType int}} 获取字段下标n的字段类型 参数1：其它字段把n换成对应下标值
 ```
