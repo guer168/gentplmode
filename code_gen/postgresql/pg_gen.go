@@ -6,16 +6,18 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/lib/pq"
 	"github.com/guer168/gentplmode/db_meta_data"
 	"github.com/guer168/gentplmode/utils"
+	"github.com/lib/pq"
 )
 
 var (
+	//获取所有表
 	tableNamesSql          = `select table_name from information_schema.tables where table_schema = 'public';`
+	//获取指定表
 	specifiedTableNamesSql = `select table_name from information_schema.tables where table_schema = 'public' and table_name =any($1);`
 
-	tableColumnsSql = `select column_name, is_nullable, data_type, false
+	tableColumnsSql = `select column_name, is_nullable, data_type, false, false
 from information_schema.columns where table_schema = 'public' and table_name = $1 order by ordinal_position;`
 )
 
@@ -101,13 +103,13 @@ func (p *PGGen) GetTableColumns(tableName string) (db_meta_data.ColumnMetaDataLi
 
 	rev := db_meta_data.ColumnMetaDataList{}
 	for rows.Next() {
-		var name, isNullable, dataType string
+		var name, isNullable, dataType, dataComment string
 		var isUnsigned bool
 		if err := rows.Scan(&name, &isNullable, &dataType, &isUnsigned); err != nil {
 			return nil, err
 		}
 		rev = append(rev, db_meta_data.NewColumnMetaData(name,
-			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, p.formatDriveEngine))
+			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, p.formatDriveEngine, dataComment))
 	}
 	return rev, rows.Err()
 }

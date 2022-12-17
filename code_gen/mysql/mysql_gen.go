@@ -12,11 +12,14 @@ import (
 )
 
 const (
+	//获取所有表
 	tableNamesSql          = `select table_name from information_schema.tables where table_schema = ? and table_type = 'base table';`
+	//获取指定表
 	specifiedTableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_name in ('%s') and table_type = 'base table';`
+	//获取字段信息
 	tableColumnsSql        = `select column_name,
 is_nullable, if(column_type = 'tinyint(1)', 'boolean', data_type),
-column_type like '%unsigned%'
+column_type like '%unsigned%', column_comment
 from information_schema.columns
 where table_schema = ? and  table_name = ?
 order by ordinal_position;
@@ -107,13 +110,14 @@ func (m *Gen) GetTableColumns(tableName string) (db_meta_data.ColumnMetaDataList
 
 	rev := db_meta_data.ColumnMetaDataList{}
 	for rows.Next() {
-		var name, isNullable, dataType string
+		var name, isNullable, dataType, dataComment string
 		var isUnsigned bool
-		if err := rows.Scan(&name, &isNullable, &dataType, &isUnsigned); err != nil {
+		if err := rows.Scan(&name, &isNullable, &dataType, &isUnsigned, &dataComment); err != nil {
 			return nil, err
 		}
+		//fmt.Println(name, dataType, dataComment)
 		rev = append(rev, db_meta_data.NewColumnMetaData(name,
-			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, m.formatDriveEngine))
+			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, m.formatDriveEngine, dataComment))
 	}
 	return rev, rows.Err()
 }

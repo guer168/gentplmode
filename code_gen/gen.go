@@ -27,6 +27,7 @@ func GenerateTemplate(templateText string, templateData interface{}, params map[
 		"CamelizeStr":    utils.CamelizeStr,
 		"FirstCharacter": utils.FirstCharacter,
 		"FirstLowerWord": utils.FirstLowerWord,
+		"RemovePrefix": utils.RemovePrefix,
 		"Replace": func(old, new, src string) string {
 			return strings.ReplaceAll(src, old, new)
 		},
@@ -37,6 +38,7 @@ func GenerateTemplate(templateText string, templateData interface{}, params map[
 			return time.Now().Format(time.RFC3339)
 		},
 		"param": func(name string) interface{} {
+			//fmt.Printf("%s\n",params)
 			if v, ok := params[name]; ok {
 				return v
 			}

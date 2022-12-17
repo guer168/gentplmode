@@ -82,12 +82,12 @@ func main() {
 	}
 	for _, item := range tables {
 		pwd,_ := os.Getwd()
-		fmt.Println(pwd)
-		newPwd :=strings.Replace(pwd, "\\", "/", -1)
-		FilePath := newPwd+"/"+destDir+"/"+item.Name+".go"
-		res := utils.FileIsExist(FilePath)
+		newPwd :=strings.ReplaceAll(pwd, "\\", "/")
+		fileName := item.Name+".go"
+		filePath := newPwd+"/"+destDir+"/"+fileName
+		res,_ := utils.FileExists(filePath)
 		if res == true{
-			color.Blue("\nFile already exists whether need to overwrite! Please enter (N/y):")
+			color.Blue("\nFile 【"+fileName+"】 already exists whether need to overwrite! Please enter (N/y):")
 			overwriteType := ""
 			fmt.Scanln(&overwriteType)
 			if overwriteType == ""{
@@ -95,11 +95,10 @@ func main() {
 			}
 			overwriteType = strings.ToLower(overwriteType)
 			if overwriteType == "n" {
-				fmt.Printf("generate quit !!!!!!")
-				return
+				fmt.Printf("【"+fileName+"】 generate quit !!!")
+				continue
 			}else{
-				utils.CleanUpGenFiles(destDir)
-				utils.MkdirPathIfNotExist(destDir)
+				utils.RemoveFile(filePath)
 			}
 		}
 

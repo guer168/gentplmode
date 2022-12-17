@@ -8,15 +8,23 @@ import (
 )
 {{end}}
 
+{{$packageName := param "packageName"}}
+{{$packageNameFirstUpper := CamelizeStr $packageName true}}
+
+{{$unPreTableName := .RemovePrefix .Name "jy_"}}
+{{$unPreTableNameUpper := CamelizeStr $unPreTableName true}}
+
+{{$firstChar := FirstCharacter .Name}}
+{{$camelizeStructName := CamelizeStr .Name false}}
+
 {{$structName := CamelizeStr .Name true}}
 
 type {{$structName}} struct {
 {{- range .Columns}}
-	{{CamelizeStr .Name true}} {{.GoType}} {{.Tag}}
+	{{CamelizeStr .Name true}} {{.GoType}} {{.Tag}} {{.Comment}}
 {{- end}}
 }
-{{$firstChar := FirstCharacter .Name}}
-{{$camelizeStructName := CamelizeStr .Name false}}
+var {{$unPreTableNameUpper}}{{$packageNameFirstUpper}} *{{$structName}}
 
 // TableName
 //  @Description: 获取表名

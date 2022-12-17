@@ -112,9 +112,9 @@ type {{$structName}} struct {
 {{$camelizeStructName := CamelizeStr .Name false}}
 
 // TableName
-//  @Description: Getting the table name
+//  @Description: 获取表名
 //  @return string
-func ({{param "packageName"}} *{{$structName}}) TableName() string {
+func ({{$firstChar}} *{{$structName}}) TableName() string {
 	return "{{.Name}}"
 }
 `
@@ -126,7 +126,7 @@ func ({{param "packageName"}} *{{$structName}}) TableName() string {
 
 {{.Name}} 数据表原名
 
-{{$firstChar} 数据表首字母
+{{$firstChar}} 数据表首字母
 
 {{$structName}} 结构体名
 
@@ -135,4 +135,21 @@ func ({{param "packageName"}} *{{$structName}}) TableName() string {
 {{.FieldName 0}} 获取字段下标0的字段名，其它字段把0换成对应下标值
 
 {{.FieldType 0}} 获取字段下标0的字段类型，其它字段把0换成对应下标值
+```
+
+参考方法：
+```
+{{CamelizeStr string bool}}			转换驼峰 	参数1：处理字符串	参数2：true=首字符大写 false=首字符非大写
+
+{{FirstCharacter string}}			获取首字母	参数1：处理字符串
+
+{{FirstLowerWord string}}			首字母小写	参数1：处理字符串
+
+{{RemovePrefix string string}}		移除表前缀	参数1：表名			参数2：表前缀
+
+{{Replace string string string}}	替换字符串	参数1：处理字符串	参数2：要替换字符	参数3：替换成为字符串
+
+{{Add int int}}						加法		参数1：数字			参数2: 数字	
+
+{{now}}								获取当前时间
 ```

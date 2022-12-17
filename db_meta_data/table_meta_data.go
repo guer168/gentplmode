@@ -70,18 +70,6 @@ func (t TableMetaData) FieldType(index int) string {
 	return rev
 }
 
-// Replace
-//  @Description: 替换字符串
-//  @receiver t
-//  @param s
-//  @param oldStr
-//  @param newStr
-//  @param n
-//  @return string
-func (t TableMetaData) Replace(s string, oldStr string, newStr string, n int) string {
-	return strings.Replace(s, oldStr, newStr, n)
-}
-
 func (t TableMetaData) ColumnsNameWithPrefixAndIgnoreColumn(col string, prefix string) string {
 	rev := ""
 	for _, item := range t.Columns {
@@ -99,6 +87,7 @@ func (t TableMetaData) ColumnsNameWithPrefixAndIgnoreColumn(col string, prefix s
 type ColumnMetaData struct {
 	Name       			string
 	DBType     			string
+	DBComment			string
 	GoType     			string
 	IsUnsigned 			bool
 	IsNullable 			bool
@@ -111,16 +100,18 @@ type ColumnMetaDataList []*ColumnMetaData
 var customerColumnDataType map[string]string
 var customerColumnDataTypeImport map[string]string
 
-func NewColumnMetaData(name string, isNullable bool, dataType string, isUnsigned bool, tableName string, formatDriveEngine string) *ColumnMetaData {
+func NewColumnMetaData(name string, isNullable bool, dataType string, isUnsigned bool, tableName string, formatDriveEngine string, dataComment string) *ColumnMetaData {
 	columnMetaData := &ColumnMetaData{
 		Name:       name,
 		IsNullable: isNullable,
 		DBType:     dataType,
+		DBComment: dataComment,
 		IsUnsigned: isUnsigned,
 		TableName:  tableName,
 		FormatDriveEngine: formatDriveEngine,
 	}
 	columnMetaData.GoType = columnMetaData.getGoType()
+	//fmt.Printf("%s\n", columnMetaData)
 	return columnMetaData
 }
 
@@ -163,7 +154,16 @@ func (c ColumnMetaData) getGoType() string {
 }
 
 func (c ColumnMetaData) Tag() string {
+	//fmt.Printf("%s\n", c)
 	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
+}
+
+// Comment
+//  @Description: 数据字段备注
+//  @receiver c
+//  @return string
+func (c ColumnMetaData) Comment() string {
+	return "//"+c.DBComment
 }
 
 // TagSetDbStr

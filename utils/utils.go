@@ -13,25 +13,34 @@ import (
 var DSNError = errors.New("dsn string error")
 
 // FirstCharacter
-//  @Description:	gets the lower-case first character
-//  @param s		character string
+//  @Description:	获取首字母
+//  @param s		字符串
 //  @return string
 func FirstCharacter(s string) string {
 	return strings.ToLower(s)[:1]
 }
 
 // FirstLowerWord
-//  @Description:	first character in lowercase
-//  @param s		character string
+//  @Description:	首字母小写
+//  @param s		字符串
 //  @return string
 func FirstLowerWord(s string) string {
 	return strings.ToLower(s[:1]) + s[1:]
 }
 
+// RemovePrefix
+//  @Description: 移除前缀
+//  @param tableName
+//  @param pre
+//  @return string
+func RemovePrefix(tableName string, pre string) string {
+	return strings.ReplaceAll(tableName, pre, "")
+}
+
 // CamelizeStr
-//  @Description: 		convert the hump string
-//  @param s			character string
-//  @param upperCase	true=Uppercase first character
+//  @Description: 		转换驼峰格式
+//  @param s			字符串
+//  @param upperCase	true=首字母大写
 //  @return string
 func CamelizeStr(s string, upperCase bool) string {
 	if len(s) == 0 {
@@ -54,10 +63,7 @@ func CamelizeStr(s string, upperCase bool) string {
 	return result
 }
 
-// camelizeWord
-//  @Description:	convert the hump string
-//  @param word		character string
-//  @return string
+// camelizeWord 转换驼峰格式
 func camelizeWord(word string) string {
 	runes := []rune(word)
 	for i, r := range runes {
@@ -71,7 +77,7 @@ func camelizeWord(word string) string {
 }
 
 // replaceInvalidChars
-//  @Description:
+//  @Description:	转换特殊字符串
 //  @param str
 //  @return string
 func replaceInvalidChars(str string) string {
@@ -81,6 +87,7 @@ func replaceInvalidChars(str string) string {
 }
 
 // https://github.com/golang/lint/blob/206c0f020eba0f7fbcfbc467a5eb808037df2ed6/lint.go#L731
+//	全大写
 var commonInitialisms = map[string]bool{
 	"ACL":   true,
 	"API":   true,
@@ -95,7 +102,7 @@ var commonInitialisms = map[string]bool{
 	"HTML":  true,
 	"HTTP":  true,
 	"HTTPS": true,
-	"ID":    true,
+	//"ID":    true,
 	"IP":    true,
 	"JSON":  true,
 	"LHS":   true,
@@ -113,7 +120,7 @@ var commonInitialisms = map[string]bool{
 	"TTL":   true,
 	"UDP":   true,
 	"UI":    true,
-	"UID":   true,
+	//"UID":   true,
 	"UUID":  true,
 	"URI":   true,
 	"URL":   true,
@@ -150,11 +157,6 @@ func GetDbNameFromDSN(dsn string) (string, error) {
 // host=127.0.0.1 dbname=test sslmode=disable Timezone=Asia/Shanghai
 const dbNamePrefix = "dbname="
 
-// getDbNameFromDsn
-//  @Description:
-//  @param dsn
-//  @return string
-//  @return error
 func getDbNameFromDsn(dsn string) (string, error) {
 	strArray := strings.Split(dsn, " ")
 	for _, item := range strArray {
@@ -165,6 +167,12 @@ func getDbNameFromDsn(dsn string) (string, error) {
 	return "", DSNError
 }
 
+// SaveFile
+//  @Description:	保存文件
+//  @param dirPath	路径
+//  @param fileName	文件名
+//  @param text		内容
+//  @return error
 func SaveFile(dirPath, fileName string, text []byte) error {
 	file, err := os.Create(filepath.Join(dirPath, fileName))
 	if err != nil {
@@ -180,7 +188,7 @@ func SaveFile(dirPath, fileName string, text []byte) error {
 }
 
 // MkdirPathIfNotExist
-//  @Description:
+//  @Description:	创建目录
 //  @param dirPath
 //  @return error
 func MkdirPathIfNotExist(dirPath string) error {
@@ -191,7 +199,7 @@ func MkdirPathIfNotExist(dirPath string) error {
 }
 
 // CleanUpGenFiles
-//  @Description:
+//  @Description:	删除指定目录下所有文件
 //  @param dir
 //  @return error
 func CleanUpGenFiles(dir string) error {
@@ -205,33 +213,27 @@ func CleanUpGenFiles(dir string) error {
 	return nil
 }
 
+// RemoveFile
+//  @Description: 删除文件
+//  @param filePath
+//  @return error
+func RemoveFile(filePath string) error {
+	if res,_ := FileExists(filePath); res == true{
+		return os.Remove(filePath)
+	}
+	return nil
+}
+
 // FileExists
-//  @Description: Check whether the file exists
-//  @param name
+//  @Description: 	判断文件是否存在
+//  @param filePath	文件路径
 //  @return bool
 //  @return error
-func FileExists(name string) (bool, error) {
-	if _, err := os.Stat(name); err != nil {
+func FileExists(filePath string) (bool, error) {
+	if _, err := os.Stat(filePath); err != nil {
 		if os.IsNotExist(err) {
 			return false, err
 		}
 	}
 	return true, nil
-}
-
-// FileIsExist
-//  @Description: Check file exists
-//  @param fieldPath
-//  @return bool
-func FileIsExist(fieldPath string) bool {
-	_, err := os.Stat(fieldPath)
-	if err == nil{
-		//fmt.Println("File exist")
-		return true
-	}
-	if os.IsNotExist(err){
-		//fmt.Println("File not exist")
-		return false
-	}
-	return false
 }

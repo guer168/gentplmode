@@ -14,19 +14,28 @@ import (
 )
 {{end}}
 
-{{$structName := CamelizeStr .Name true}}
-type {{$structName}} struct {
-{{- range .Columns}}
-	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + `
-{{- end}}
-}
+{{$packageName := param "packageName"}}
+{{$packageNameFirstUpper := CamelizeStr $packageName true}}
+
+{{$unPreTableName := RemovePrefix .Name "jy_"}}
+{{$unPreTableNameUpper := CamelizeStr $unPreTableName true}}
+
 {{$firstChar := FirstCharacter .Name}}
 {{$camelizeStructName := CamelizeStr .Name false}}
 
+{{$structName := CamelizeStr .Name true}}
+
+type {{$structName}} struct {
+{{- range .Columns}}
+	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + ` {{.Comment}}
+{{- end}}
+}
+var {{$unPreTableNameUpper}}{{$packageNameFirstUpper}} *{{$structName}}
+
 // TableName
-//  @Description: Getting the table name
+//  @Description: 获取表名
 //  @return string
-func ({{param "packageName"}} *{{$structName }}) TableName() string {
+func ({{$firstChar}} *{{$structName}}) TableName() string {
 	return "{{.Name}}"
 }
 `
