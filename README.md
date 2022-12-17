@@ -105,7 +105,7 @@ import (
 {{$packageNameFirstUpper := CamelizeStr $packageName true}}
 
 {{$unPreTableName := .RemovePrefix .Name "jy_"}}
-{{$unPreTableNameFirstUpper := CamelizeStr $unPreTableName true}
+{{$unPreTableNameFirstUpper := CamelizeStr $unPreTableName true}}
 
 {{$structName := CamelizeStr .Name true}}
 
