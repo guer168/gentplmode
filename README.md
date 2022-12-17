@@ -117,7 +117,7 @@ type {{$structName}} struct {
 	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + `
 {{- end}}
 }
-
+var {{$unPreTableNameFirstUpper}}{{$packageNameFirstUpper}} *{{$structName}}
 
 // TableName
 //  @Description: 获取表名
