@@ -81,6 +81,13 @@ func main() {
 		return
 	}
 	for _, item := range tables {
+		//fmt.Printf("%s,%s\n",tableNames,len(tableNames))
+		if len(tableNames) > 0 {
+			resTable := utils.InSlice(tableNames, item.Name)
+			if resTable == false{
+				continue
+			}
+		}
 		pwd,_ := os.Getwd()
 		newPwd :=strings.ReplaceAll(pwd, "\\", "/")
 		fileName := item.Name+".go"

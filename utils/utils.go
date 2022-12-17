@@ -237,3 +237,17 @@ func FileExists(filePath string) (bool, error) {
 	}
 	return true, nil
 }
+
+// InSlice
+//  @Description: 判断是否在切片中
+//  @param items	切片
+//  @param item		字符串
+//  @return bool
+func InSlice(items []string, item string) bool {
+	for _, eachItem := range items {
+		if eachItem == item {
+			return true
+		}
+	}
+	return false
+}
