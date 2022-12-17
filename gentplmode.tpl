@@ -11,7 +11,7 @@ import (
 {{$packageName := param "packageName"}}
 {{$packageNameFirstUpper := CamelizeStr $packageName true}}
 
-{{$unPreTableName := .RemovePrefix .Name "jy_"}}
+{{$unPreTableName := RemovePrefix .Name "jy_"}}
 {{$unPreTableNameUpper := CamelizeStr $unPreTableName true}}
 
 {{$firstChar := FirstCharacter .Name}}
@@ -29,7 +29,7 @@ var {{$unPreTableNameUpper}}{{$packageNameFirstUpper}} *{{$structName}}
 // TableName
 //  @Description: 获取表名
 //  @return string
-func ({{param "packageName"}} *{{$structName }}) TableName() string {
+func ({{$firstChar}} *{{$structName }}) TableName() string {
 	return "{{.Name}}"
 }
 
@@ -37,7 +37,7 @@ func ({{param "packageName"}} *{{$structName }}) TableName() string {
 //  @Description: 创建钩子函数
 //  @param scope
 //  @return error
-func ({{param "packageName"}} *{{$structName }}) BeforeCreate(scope *gorm.Scope) error {
+func ({{$firstChar}} *{{$structName }}) BeforeCreate(scope *gorm.Scope) error {
 	//scope.SetColumn("created_at", time.Now())
 	//scope.SetColumn("updated_at", time.Now())
 	return nil
@@ -47,7 +47,7 @@ func ({{param "packageName"}} *{{$structName }}) BeforeCreate(scope *gorm.Scope)
 //  @Description: 更新钩子函数
 //  @param scope
 //  @return error
-func ({{param "packageName"}} *{{$structName }}) BeforeUpdate(scope *gorm.Scope) error {
+func ({{$firstChar}} *{{$structName }}) BeforeUpdate(scope *gorm.Scope) error {
 	//scope.SetColumn("updated_at", time.Now())
 	return nil
 }
