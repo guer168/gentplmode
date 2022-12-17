@@ -101,15 +101,23 @@ import (
 )
 {{end}}
 
+{{$packageName := param "packageName"}}
+{{$packageNameFirstUpper := CamelizeStr $packageName true}}
+
+{{$unPreTableName := .RemovePrefix .Name "jy_"}}
+{{$unPreTableNameFirstUpper := CamelizeStr $unPreTableName true}
+
 {{$structName := CamelizeStr .Name true}}
+
+{{$firstChar := FirstCharacter .Name}}
+{{$camelizeStructName := CamelizeStr .Name false}}
 
 type {{$structName}} struct {
 {{- range .Columns}}
 	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + `
 {{- end}}
 }
-{{$firstChar := FirstCharacter .Name}}
-{{$camelizeStructName := CamelizeStr .Name false}}
+
 
 // TableName
 //  @Description: 获取表名
