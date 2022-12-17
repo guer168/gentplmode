@@ -147,17 +147,17 @@ func ({{$firstChar}} *{{$structName}}) TableName() string {
 
 参考方法：
 ```
-{{CamelizeStr string bool}}		转换驼峰	参数1：处理字符串	参数2：true=首字符大写 false=首字符非大写
+{{CamelizeStr string bool}} 转换驼峰 参数1：处理字符串 参数2：true=首字符大写 false=首字符非大写
 
-{{FirstCharacter string}}	获取首字母	参数1：处理字符串
+{{FirstCharacter string}} 获取首字母 参数1：处理字符串
 
-{{FirstLowerWord string}}	首字母小写	参数1：处理字符串
+{{FirstLowerWord string}} 首字母小写 参数1：处理字符串
 
-{{RemovePrefix string string}}	移除表前缀	参数1：表名	参数2：表前缀
+{{RemovePrefix string string}} 移除表前缀 参数1：表名 参数2：表前缀
 
-{{Replace string string string}}	替换字符串	参数1：处理字符串	参数2：要替换字符	参数3：替换成为字符串
+{{Replace string string string}} 替换字符串 参数1：处理字符串 参数2：要替换字符 参数3：替换成为字符串
 
-{{Add int int}}		加法	参数1：数字	参数2: 数字	
+{{Add int int}} 加法 参数1：数字 参数2: 数字	
 
-{{now}}	获取当前时间
+{{now}} 获取当前时间
 ```
