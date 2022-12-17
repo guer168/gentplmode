@@ -114,7 +114,7 @@ import (
 
 type {{$structName}} struct {
 {{- range .Columns}}
-	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + `
+	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + ` {{.Comment}}
 {{- end}}
 }
 var {{$unPreTableNameFirstUpper}}{{$packageNameFirstUpper}} *{{$structName}}
