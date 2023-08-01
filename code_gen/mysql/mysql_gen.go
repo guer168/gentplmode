@@ -13,9 +13,9 @@ import (
 
 const (
 	//获取所有表
-	tableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_type = 'BASE TABLE';`
+	tableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_type in ('BASE TABLE','base table');`
 	//获取指定表
-	specifiedTableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_name in ('%s') and table_type = 'BASE TABLE';`
+	specifiedTableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_name in ('%s') and table_type in ('BASE TABLE','base table');`
 	//获取字段信息
 	tableColumnsSql = `select column_name,
 is_nullable, if(column_type = 'tinyint(1)', 'boolean', data_type),
