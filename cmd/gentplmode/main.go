@@ -13,14 +13,14 @@ import (
 )
 
 var (
-	target       		string
-	dsn          		string
-	destDir      		string
-	packageName  		string
-	tableNames   		strFlags
-	templatePath 		string
-	debug        		bool
-	formatDriveEngine	string
+	target            string
+	dsn               string
+	destDir           string
+	packageName       string
+	tableNames        strFlags
+	templatePath      string
+	debug             bool
+	formatDriveEngine string
 )
 
 type strFlags []string
@@ -84,31 +84,30 @@ func main() {
 		//fmt.Printf("%s,%s\n",tableNames,len(tableNames))
 		if len(tableNames) > 0 {
 			resTable := utils.InSlice(tableNames, item.Name)
-			if resTable == false{
+			if resTable == false {
 				continue
 			}
 		}
-		pwd,_ := os.Getwd()
-		newPwd :=strings.ReplaceAll(pwd, "\\", "/")
-		fileName := item.Name+".go"
-		filePath := newPwd+"/"+destDir+"/"+fileName
-		res,_ := utils.FileExists(filePath)
-		if res == true{
-			color.Blue("\nFile 【"+fileName+"】 already exists whether need to overwrite! Please enter (N/y):")
+		pwd, _ := os.Getwd()
+		newPwd := strings.ReplaceAll(pwd, "\\", "/")
+		fileName := item.Name + ".go"
+		filePath := newPwd + "/" + destDir + "/" + fileName
+		res, _ := utils.FileExists(filePath)
+		if res == true {
+			color.Blue("\nFile 【" + fileName + "】 already exists whether need to overwrite! Please enter (N/y):")
 			overwriteType := ""
 			fmt.Scanln(&overwriteType)
-			if overwriteType == ""{
+			if overwriteType == "" {
 				overwriteType = "n"
 			}
 			overwriteType = strings.ToLower(overwriteType)
 			if overwriteType == "n" {
-				fmt.Printf("【"+fileName+"】 generate quit !!!")
+				fmt.Printf("【" + fileName + "】 generate quit !!!")
 				continue
-			}else{
+			} else {
 				utils.RemoveFile(filePath)
 			}
 		}
-
 
 		body, err := code_gen.GenerateTemplate(temp.GetTemplate(), item, map[string]interface{}{
 			"packageName": packageName,

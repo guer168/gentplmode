@@ -13,7 +13,7 @@ import (
 
 var (
 	//获取所有表
-	tableNamesSql          = `select table_name from information_schema.tables where table_schema = 'public';`
+	tableNamesSql = `select table_name from information_schema.tables where table_schema = 'public';`
 	//获取指定表
 	specifiedTableNamesSql = `select table_name from information_schema.tables where table_schema = 'public' and table_name =any($1);`
 
@@ -22,14 +22,15 @@ from information_schema.columns where table_schema = 'public' and table_name = $
 )
 
 type PGGen struct {
-	db     				*sql.DB
-	dbName 				string
-	formatDriveEngine	string
+	db                *sql.DB
+	dbName            string
+	formatDriveEngine string
 }
 
 func (p *PGGen) ConnectionDB(dsn string) error {
 	dbName, err := utils.GetDbNameFromDSN(dsn)
 	if err != nil {
+		fmt.Printf("GetDbNameFromDSN err:%v", err)
 		return err
 	}
 	p.dbName = dbName
@@ -115,9 +116,9 @@ func (p *PGGen) GetTableColumns(tableName string) (db_meta_data.ColumnMetaDataLi
 }
 
 func (m *PGGen) SetFormatDriveEngine(formatDriveEngine string) error {
-	if len(formatDriveEngine)>0 {
+	if len(formatDriveEngine) > 0 {
 		m.formatDriveEngine = formatDriveEngine
-	}else{
+	} else {
 		m.formatDriveEngine = "db"
 	}
 	return nil

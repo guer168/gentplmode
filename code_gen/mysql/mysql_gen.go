@@ -13,11 +13,11 @@ import (
 
 const (
 	//获取所有表
-	tableNamesSql          = `select table_name from information_schema.tables where table_schema = ? and table_type = 'base table';`
+	tableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_type = 'BASE TABLE';`
 	//获取指定表
-	specifiedTableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_name in ('%s') and table_type = 'base table';`
+	specifiedTableNamesSql = `select table_name from information_schema.tables where table_schema = ? and table_name in ('%s') and table_type = 'BASE TABLE';`
 	//获取字段信息
-	tableColumnsSql        = `select column_name,
+	tableColumnsSql = `select column_name,
 is_nullable, if(column_type = 'tinyint(1)', 'boolean', data_type),
 column_type like '%unsigned%', column_comment
 from information_schema.columns
@@ -27,23 +27,26 @@ order by ordinal_position;
 )
 
 type Gen struct {
-	db     				*sql.DB
-	dbName 				string
-	formatDriveEngine	string
+	db                *sql.DB
+	dbName            string
+	formatDriveEngine string
 }
 
 func (m *Gen) ConnectionDB(dsn string) error {
-	fmt.Println("MySQL Connecting dsn : " + dsn)
+	fmt.Println("MySQL Connecting dsn: " + dsn)
 	dbName, err := utils.GetDbNameFromDSN(dsn)
 	if err != nil {
+		fmt.Printf("MySQL Connect err: %v", err)
 		return err
 	}
 	m.dbName = dbName
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
+		fmt.Printf("MySQL Open err: %v", err)
 		return err
 	}
 	if err := db.Ping(); err != nil {
+		fmt.Printf("MySQL Ping err: %v", err)
 		return err
 	}
 	m.db = db
@@ -123,9 +126,9 @@ func (m *Gen) GetTableColumns(tableName string) (db_meta_data.ColumnMetaDataList
 }
 
 func (m *Gen) SetFormatDriveEngine(formatDriveEngine string) error {
-	if len(formatDriveEngine)>0 {
+	if len(formatDriveEngine) > 0 {
 		m.formatDriveEngine = formatDriveEngine
-	}else{
+	} else {
 		m.formatDriveEngine = "db"
 	}
 	return nil
