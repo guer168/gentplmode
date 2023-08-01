@@ -5,7 +5,8 @@ gentplmode 把数据库的表转换成`go`语言的`struct`，支持 `PostgreSQL
 ## 安装 
 安装到`GOPATH`的 `bin`目录.
 ```
-go get -u github.com/guer168/gentplmode/cmd/gentplmode
+go get -u github.com/guer168/gentplmode/cmd/gentplmode		#go 1.16
+go install github.com/guer168/gentplmode/cmd/gentplmode   	#go 1.17及以上
 ```
 ## 卸载 
 卸载 `gentplmode`.
