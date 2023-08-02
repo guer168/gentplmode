@@ -12,10 +12,10 @@ type TableMetaData struct {
 	Name    string
 	Columns ColumnMetaDataList
 }
+
 var tableMetaData *TableMetaData
 
 type TableMetaDataList []*TableMetaData
-
 
 func (t TableMetaData) Imports() []string {
 	imports := map[string]string{}
@@ -39,14 +39,15 @@ func (t TableMetaData) Imports() []string {
 }
 
 // FieldName
-//  @Description: 获取字段名称
-//  @receiver t
-//  @param index	字段下标
-//  @return string
+//
+//	@Description: 获取字段名称
+//	@receiver t
+//	@param index	字段下标
+//	@return string
 func (t TableMetaData) FieldName(index int) string {
 	rev := ""
 	for idx, item := range t.Columns {
-		if idx == index{
+		if idx == index {
 			rev = item.Name
 			break
 		}
@@ -55,14 +56,15 @@ func (t TableMetaData) FieldName(index int) string {
 }
 
 // FieldType
-//  @Description: 获取字段类型
-//  @receiver t
-//  @param index	字段下标
-//  @return string
+//
+//	@Description: 获取字段类型
+//	@receiver t
+//	@param index	字段下标
+//	@return string
 func (t TableMetaData) FieldType(index int) string {
 	rev := ""
 	for idx, item := range t.Columns {
-		if idx == index{
+		if idx == index {
 			rev = item.GoType
 			break
 		}
@@ -85,14 +87,16 @@ func (t TableMetaData) ColumnsNameWithPrefixAndIgnoreColumn(col string, prefix s
 }
 
 type ColumnMetaData struct {
-	Name       			string
-	DBType     			string
-	DBComment			string
-	GoType     			string
-	IsUnsigned 			bool
-	IsNullable 			bool
-	TableName  			string
-	FormatDriveEngine  	string
+	Name              string
+	DBType            string
+	DBComment         string
+	GoType            string
+	IsUnsigned        bool
+	IsNullable        bool
+	ColumnKey         string
+	Extra             string
+	TableName         string
+	FormatDriveEngine string
 }
 
 type ColumnMetaDataList []*ColumnMetaData
@@ -100,14 +104,16 @@ type ColumnMetaDataList []*ColumnMetaData
 var customerColumnDataType map[string]string
 var customerColumnDataTypeImport map[string]string
 
-func NewColumnMetaData(name string, isNullable bool, dataType string, isUnsigned bool, tableName string, formatDriveEngine string, dataComment string) *ColumnMetaData {
+func NewColumnMetaData(name string, isNullable bool, dataType string, isUnsigned bool, tableName string, formatDriveEngine string, dataComment string, columnKey string, extra string) *ColumnMetaData {
 	columnMetaData := &ColumnMetaData{
-		Name:       name,
-		IsNullable: isNullable,
-		DBType:     dataType,
-		DBComment: dataComment,
-		IsUnsigned: isUnsigned,
-		TableName:  tableName,
+		Name:              name,
+		IsNullable:        isNullable,
+		DBType:            dataType,
+		DBComment:         dataComment,
+		IsUnsigned:        isUnsigned,
+		ColumnKey:         columnKey,
+		Extra:             extra,
+		TableName:         tableName,
 		FormatDriveEngine: formatDriveEngine,
 	}
 	columnMetaData.GoType = columnMetaData.getGoType()
@@ -155,37 +161,55 @@ func (c ColumnMetaData) getGoType() string {
 
 func (c ColumnMetaData) Tag() string {
 	//fmt.Printf("%s\n", c)
-	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
+	formatParam1 := ""
+	if len(c.ColumnKey) > 0 {
+		switch c.ColumnKey {
+		case "PRI":
+			formatParam1 = formatParam1 + ";primary_key"
+		case "UNI":
+			formatParam1 = formatParam1 + ";unique"
+		case "MUL":
+			formatParam1 = formatParam1 + ";index"
+		default:
+			formatParam1 = ""
+		}
+	}
+	if c.Extra == "auto_increment" {
+		formatParam1 = formatParam1 + ";AUTO_INCREMENT"
+	}
+	return fmt.Sprintf("`%s:\"%s%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, formatParam1, utils.CamelizeStr(c.Name, false))
 }
 
 // Comment
-//  @Description: 数据字段备注
-//  @receiver c
-//  @return string
+//
+//	@Description: 数据字段备注
+//	@receiver c
+//	@return string
 func (c ColumnMetaData) Comment() string {
-	return "//"+c.DBComment
+	return "//" + c.DBComment
 }
 
 // TagSetDbStr
-//  @Description: 设置db扩展参数
-//  @receiver c
-//  @param indexNums	下标字符串 如 0,1,2
-//  @param dbStr		db扩展字符串
-//  @return string
+//
+//	@Description: 设置db扩展参数
+//	@receiver c
+//	@param indexNums	下标字符串 如 0,1,2
+//	@param dbStr		db扩展字符串
+//	@return string
 func (c ColumnMetaData) TagSetDbStr(indexNums string, dbStr string) string {
-	indexArr := strings.Split(indexNums,",")
+	indexArr := strings.Split(indexNums, ",")
 	currFieldName := ""
 	isSetStr := false
-	for _,v := range indexArr {
-		indexInt,_ := strconv.Atoi(v)
+	for _, v := range indexArr {
+		indexInt, _ := strconv.Atoi(v)
 		currFieldName = tableMetaData.FieldName(indexInt)
-		if(currFieldName == c.Name){
+		if currFieldName == c.Name {
 			isSetStr = true
 			break
 		}
 	}
 
-	if isSetStr == true{
+	if isSetStr == true {
 		return fmt.Sprintf("`%s:\"%s%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, dbStr, utils.CamelizeStr(c.Name, false))
 	}
 
@@ -193,51 +217,53 @@ func (c ColumnMetaData) TagSetDbStr(indexNums string, dbStr string) string {
 }
 
 // TagSetJsonStr
-//  @Description: 设置json扩展参数
-//  @receiver c
-//  @param indexNums	下标字符串 如 0,1,2
-//  @param jsonStr		json扩展字符串
-//  @return string
+//
+//	@Description: 设置json扩展参数
+//	@receiver c
+//	@param indexNums	下标字符串 如 0,1,2
+//	@param jsonStr		json扩展字符串
+//	@return string
 func (c ColumnMetaData) TagSetJsonStr(indexNums string, jsonStr string) string {
-	indexArr := strings.Split(indexNums,",")
+	indexArr := strings.Split(indexNums, ",")
 	currFieldName := ""
 	isSetStr := false
-	for _,v := range indexArr {
-		indexInt,_ := strconv.Atoi(v)
+	for _, v := range indexArr {
+		indexInt, _ := strconv.Atoi(v)
 		currFieldName = tableMetaData.FieldName(indexInt)
-		if(currFieldName == c.Name){
+		if currFieldName == c.Name {
 			isSetStr = true
 			break
 		}
 	}
 
-	if isSetStr == true{
+	if isSetStr == true {
 		return fmt.Sprintf("`%s:\"%s\" json:\"%s%s\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false), jsonStr)
 	}
 	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))
 }
 
 // TagSetDbJsonStr
-//  @Description: 设置db和json扩展参数
-//  @receiver c
-//  @param indexNums	下标字符串 如 0,1,2
-//  @param dbStr		db扩展字符串
-//  @param jsonStr		json扩展字符串
-//  @return string
+//
+//	@Description: 设置db和json扩展参数
+//	@receiver c
+//	@param indexNums	下标字符串 如 0,1,2
+//	@param dbStr		db扩展字符串
+//	@param jsonStr		json扩展字符串
+//	@return string
 func (c ColumnMetaData) TagSetDbJsonStr(indexNums string, dbStr string, jsonStr string) string {
-	indexArr := strings.Split(indexNums,",")
+	indexArr := strings.Split(indexNums, ",")
 	currFieldName := ""
 	isSetStr := false
-	for _,v := range indexArr {
-		indexInt,_ := strconv.Atoi(v)
+	for _, v := range indexArr {
+		indexInt, _ := strconv.Atoi(v)
 		currFieldName = tableMetaData.FieldName(indexInt)
-		if(currFieldName == c.Name){
+		if currFieldName == c.Name {
 			isSetStr = true
 			break
 		}
 	}
 
-	if isSetStr == true{
+	if isSetStr == true {
 		return fmt.Sprintf("`%s:\"%s%s\" json:\"%s%s\"`", c.FormatDriveEngine, c.Name, dbStr, utils.CamelizeStr(c.Name, false), jsonStr)
 	}
 	return fmt.Sprintf("`%s:\"%s\" json:\"%s,omitempty\"`", c.FormatDriveEngine, c.Name, utils.CamelizeStr(c.Name, false))

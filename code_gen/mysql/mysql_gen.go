@@ -19,7 +19,7 @@ const (
 	//获取字段信息
 	tableColumnsSql = `select column_name,
 is_nullable, if(column_type = 'tinyint(1)', 'boolean', data_type),
-column_type like '%unsigned%', column_comment
+column_type like '%unsigned%', column_comment,column_key,extra
 from information_schema.columns
 where table_schema = ? and  table_name = ?
 order by ordinal_position;
@@ -36,17 +36,17 @@ func (m *Gen) ConnectionDB(dsn string) error {
 	fmt.Println("MySQL Connecting dsn: " + dsn)
 	dbName, err := utils.GetDbNameFromDSN(dsn)
 	if err != nil {
-		fmt.Printf("MySQL Connect err: %v", err)
+		fmt.Printf("MySQL Connect err: %#v", err)
 		return err
 	}
 	m.dbName = dbName
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		fmt.Printf("MySQL Open err: %v", err)
+		fmt.Printf("MySQL Open err: %#v", err)
 		return err
 	}
 	if err := db.Ping(); err != nil {
-		fmt.Printf("MySQL Ping err: %v", err)
+		fmt.Printf("MySQL Ping err: %#v", err)
 		return err
 	}
 	m.db = db
@@ -113,14 +113,14 @@ func (m *Gen) GetTableColumns(tableName string) (db_meta_data.ColumnMetaDataList
 
 	rev := db_meta_data.ColumnMetaDataList{}
 	for rows.Next() {
-		var name, isNullable, dataType, dataComment string
+		var name, isNullable, dataType, dataComment, columnKey, extra string
 		var isUnsigned bool
-		if err := rows.Scan(&name, &isNullable, &dataType, &isUnsigned, &dataComment); err != nil {
+		if err := rows.Scan(&name, &isNullable, &dataType, &isUnsigned, &dataComment, &columnKey, &extra); err != nil {
 			return nil, err
 		}
 		//fmt.Println(name, dataType, dataComment)
 		rev = append(rev, db_meta_data.NewColumnMetaData(name,
-			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, m.formatDriveEngine, dataComment))
+			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, m.formatDriveEngine, dataComment, columnKey, extra))
 	}
 	return rev, rows.Err()
 }

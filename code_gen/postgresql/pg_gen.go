@@ -104,13 +104,13 @@ func (p *PGGen) GetTableColumns(tableName string) (db_meta_data.ColumnMetaDataLi
 
 	rev := db_meta_data.ColumnMetaDataList{}
 	for rows.Next() {
-		var name, isNullable, dataType, dataComment string
+		var name, isNullable, dataType, dataComment, columnKey, extra string
 		var isUnsigned bool
-		if err := rows.Scan(&name, &isNullable, &dataType, &isUnsigned); err != nil {
+		if err := rows.Scan(&name, &isNullable, &dataType, &isUnsigned, &columnKey, &extra); err != nil {
 			return nil, err
 		}
 		rev = append(rev, db_meta_data.NewColumnMetaData(name,
-			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, p.formatDriveEngine, dataComment))
+			strings.ToLower(isNullable) == "yes", dataType, isUnsigned, tableName, p.formatDriveEngine, dataComment, columnKey, extra))
 	}
 	return rev, rows.Err()
 }
