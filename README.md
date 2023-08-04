@@ -85,14 +85,8 @@ gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -t
 gentplmode  -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -package_name=db_model -drive_engine=db -dir="./model" -template_path="D:/test/test_template.tpl" 
 ```
 
-自定义模板 template 列子参考：
+自定义模板 template 列子1：
 ```
-package templates
-
-var templateHeader = `
-// Generated at {{now}}
-`
-var tableModelTemplate = `
 package {{param "packageName"}}
 {{ if .Imports }}
 import (
@@ -106,7 +100,7 @@ import (
 {{$packageNameFirstUpper := CamelizeStr $packageName true}}
 
 {{$unPreTableName := .RemovePrefix .Name "jy_"}}
-{{$unPreTableNameFirstUpper := CamelizeStr $unPreTableName true}}
+{{$unPreTableNameFirstUpper := CamelizeStr $unPreTableName true}
 
 {{$structName := CamelizeStr .Name true}}
 
@@ -115,7 +109,7 @@ import (
 
 type {{$structName}} struct {
 {{- range .Columns}}
-	{{CamelizeStr .Name true}} {{.GoType}} ` + "{{.Tag}}" + ` {{.Comment}}
+	{{CamelizeStr .Name true}} {{.GoType}} {{.Tag}} {{.Comment}}
 {{- end}}
 }
 var {{$unPreTableNameFirstUpper}}{{$packageNameFirstUpper}} *{{$structName}}
@@ -126,7 +120,64 @@ var {{$unPreTableNameFirstUpper}}{{$packageNameFirstUpper}} *{{$structName}}
 func ({{$firstChar}} *{{$structName}}) TableName() string {
 	return "{{.Name}}"
 }
-`
+```
+
+自定义模板 template 列子2：
+```
+package {{param "packageName"}}
+
+import (
+{{ if .Imports }}
+    {{- range .Imports}}
+        "{{.}}"
+    {{- end}}
+{{end}}
+    "github.com/jinzhu/gorm"
+)
+
+
+{{$packageName := param "packageName"}}
+{{$packageNameFirstUpper := CamelizeStr $packageName true}}
+
+{{$unPreTableName := RemovePrefix .Name "erp_"}}
+{{$unPreTableNameUpper := CamelizeStr $unPreTableName true}}
+
+{{$firstChar := FirstCharacter .Name}}
+{{$camelizeStructName := CamelizeStr .Name false}}
+
+{{$structName := CamelizeStr .Name true}}
+
+type {{$unPreTableNameUpper}} struct {
+{{- range .Columns}}
+	{{CamelizeStr .Name true}} {{.GoType}} {{.Tag}} {{.Comment}}
+{{- end}}
+}
+
+// TableName
+//  @Description: 获取表名
+//  @return string
+func ({{$firstChar}} *{{$unPreTableNameUpper}}) TableName() string {
+	return "{{.Name}}"
+}
+
+// BeforeCreate
+//  @Description: 创建钩子函数
+//  @param scope
+//  @return error
+func ({{$firstChar}} *{{$unPreTableNameUpper}}) BeforeCreate(scope *gorm.Scope) error {
+	//scope.SetColumn("created_at", time.Now())
+	//scope.SetColumn("updated_at", time.Now())
+	return nil
+}
+
+// BeforeUpdate
+//  @Description: 更新钩子函数
+//  @param scope
+//  @return error
+func ({{$firstChar}} *{{$unPreTableNameUpper}}) BeforeUpdate(scope *gorm.Scope) error {
+	//scope.SetColumn("updated_at", time.Now())
+	return nil
+}
 ```
 
 参考变量：
