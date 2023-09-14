@@ -27,7 +27,8 @@ func GenerateTemplate(templateText string, templateData interface{}, params map[
 		"CamelizeStr":    utils.CamelizeStr,
 		"FirstCharacter": utils.FirstCharacter,
 		"FirstLowerWord": utils.FirstLowerWord,
-		"RemovePrefix": utils.RemovePrefix,
+		"RemovePrefix":   utils.RemovePrefix,
+		"StrToLower":     utils.StrToLower,
 		"Replace": func(old, new, src string) string {
 			return strings.ReplaceAll(src, old, new)
 		},

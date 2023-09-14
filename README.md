@@ -213,6 +213,8 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}) BeforeUpdate(scope *gorm.Scope) 
 
 {{RemovePrefix string string}} 移除表前缀 参数1：表名 参数2：表前缀
 
+{{StrToLower string string}} 转换小写字母 参数1：处理字符串	
+
 {{Replace string string string}} 替换字符串 参数1：处理字符串 参数2：要替换字符 参数3：替换成为字符串
 
 {{Add int int}} 加法 参数1：数字 参数2: 数字	
