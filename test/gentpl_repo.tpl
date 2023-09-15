@@ -103,6 +103,7 @@ func ({{$firstChar}} *{{$unPreTableNameLower}}) SearchList(where *do.Where{{$unP
 func ({{$firstChar}} *{{$unPreTableNameLower}}) SearchPage(where *do.Where{{$unPreTableNameUpper}}, page, limit int32) ([]do.{{$unPreTableNameUpper}}, int64, error) {
 	offset := (page - 1) * limit
 
+    var count int64
 	var items []do.{{$unPreTableNameUpper}}
 	db := {{$firstChar}}.InitMySql().Model(&do.{{$unPreTableNameUpper}}{})
 
@@ -117,36 +118,13 @@ func ({{$firstChar}} *{{$unPreTableNameLower}}) SearchPage(where *do.Where{{$unP
         {{- $first = false }}
     {{- end }}
 
-	res := db.Order("id DESC").Limit(limit).Offset(offset).Find(&items)
+	dbCount := db
+    dbList := db
+
+    dbCount.Count(count)
+    res := dbList.Order("id DESC").Limit(limit).Offset(offset).Find(&items)
 	if res.Error != nil {
 		return nil, 0, res.Error
 	}
 	return items, int64(len(items)), nil
-}
-
-// Query 通过sql运行有返回结果
-func ({{$firstChar}} *{{$unPreTableNameLower}}) Query(sql string, args ...any) ([]interface{}, error) {
-	runSql := sql
-	if len(args) > 0 {
-		runSql = fmt.Sprintf(sql, args)
-	}
-	var items []interface{}
-	res := {{$firstChar}}.InitMySql().Raw(runSql).Find(&items)
-	if res.Error != nil {
-		return nil, res.Error
-	}
-	return items, nil
-}
-
-// Exec 通过sql运行无返回结果
-func ({{$firstChar}} *{{$unPreTableNameLower}}) Exec(sql string, args ...any) (int64, error) {
-	runSql := sql
-	if len(args) > 0 {
-		runSql = fmt.Sprintf(sql, args)
-	}
-	res := {{$firstChar}}.InitMySql().Exec(runSql)
-	if res.Error != nil {
-		return 0, res.Error
-	}
-	return res.RowsAffected, nil
 }
