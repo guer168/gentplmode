@@ -55,6 +55,8 @@ func main() {
 		fileName = filepath.Base(destDir)
 		destDir = strings.ReplaceAll(inputDir, fileName, "")
 	}
+	destDir = strings.TrimRight(destDir, "/")
+	inputDir = strings.TrimRight(inputDir, "/")
 	utils.MkdirPathIfNotExist(destDir)
 	dbMetaData, err := code_gen.NewDbCodeGen(target)
 	if err != nil {
@@ -99,7 +101,7 @@ func main() {
 		newPwd := strings.ReplaceAll(pwd, "\\", "/")
 
 		if strings.HasSuffix(inputDir, ".go") {
-			fileName = filepath.Base(destDir)
+			fileName = filepath.Base(inputDir)
 		} else {
 			fileName = item.Name + ".go"
 		}
@@ -131,7 +133,7 @@ func main() {
 			fmt.Printf("GenerateTemplate err: %#v", err.Error())
 			return
 		}
-		if err := utils.SaveFile(destDir, item.Name+".go", body); err != nil {
+		if err := utils.SaveFile(destDir, fileName, body); err != nil {
 			fmt.Printf("save file error: %#v", err)
 			return
 		}
