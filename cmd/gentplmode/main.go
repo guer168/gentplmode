@@ -54,9 +54,8 @@ func main() {
 	if strings.HasSuffix(inputDir, ".go") {
 		fileName = filepath.Base(destDir)
 		destDir = strings.ReplaceAll(inputDir, fileName, "")
-	} else {
-		utils.MkdirPathIfNotExist(destDir)
 	}
+	utils.MkdirPathIfNotExist(destDir)
 	dbMetaData, err := code_gen.NewDbCodeGen(target)
 	if err != nil {
 		fmt.Println("unsupported db type, please input mysql postgresql[pg]")
