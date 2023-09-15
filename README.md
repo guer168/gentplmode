@@ -76,9 +76,11 @@ gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -t
 ```
 gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user -drive_engine=db
 ```
-指定生成目录，使用 `-dir`   
+指定生成目录或文件相对路径，使用 `-dir`   
 ```
 gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user -drive_engine=db -dir="./model"
+或
+gentplmode -target=pg -dsn="postgres://:@127.0.0.1:5432/test?sslmode=disable" -table_names=employee -table_names=user -drive_engine=db -dir="./model/test.go"
 ```
 自定义 template 使用 `-template_path` 自定义模板 
 ```

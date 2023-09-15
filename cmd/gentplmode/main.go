@@ -9,6 +9,7 @@ import (
 	"github.com/guer168/gentplmode/db_meta_data"
 	"github.com/guer168/gentplmode/utils"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -37,7 +38,7 @@ func (i *strFlags) Set(value string) error {
 func init() {
 	flag.StringVar(&target, "target", "postgresql", "mysql postgresql[pg]")
 	flag.StringVar(&dsn, "dsn", "postgresql", "dsn")
-	flag.StringVar(&destDir, "dir", "./tmp", "Destination dir for files generated.")
+	flag.StringVar(&destDir, "dir", "./tmp", "Destination dir for files generated Or file relative path")
 	flag.StringVar(&packageName, "package_name", "model", "package name default model.")
 	flag.StringVar(&templatePath, "template_path", "", "custom template file path")
 	flag.Var(&tableNames, "table_names", "if it is empty, will generate all tables in database")
@@ -90,7 +91,12 @@ func main() {
 		}
 		pwd, _ := os.Getwd()
 		newPwd := strings.ReplaceAll(pwd, "\\", "/")
-		fileName := item.Name + ".go"
+		fileName := ""
+		if strings.HasSuffix(destDir, ".go") {
+			fileName = filepath.Base(destDir)
+		} else {
+			fileName = item.Name + ".go"
+		}
 		filePath := newPwd + "/" + destDir + "/" + fileName
 		res, _ := utils.FileExists(filePath)
 		if res == true {
