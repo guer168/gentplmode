@@ -49,7 +49,14 @@ func init() {
 func main() {
 	flag.Parse()
 	//utils.CleanUpGenFiles(destDir)
-	utils.MkdirPathIfNotExist(destDir)
+	inputDir := destDir
+	fileName := ""
+	if strings.HasSuffix(inputDir, ".go") {
+		fileName = filepath.Base(destDir)
+		destDir = strings.ReplaceAll(inputDir, fileName, "")
+	} else {
+		utils.MkdirPathIfNotExist(destDir)
+	}
 	dbMetaData, err := code_gen.NewDbCodeGen(target)
 	if err != nil {
 		fmt.Println("unsupported db type, please input mysql postgresql[pg]")
@@ -91,8 +98,8 @@ func main() {
 		}
 		pwd, _ := os.Getwd()
 		newPwd := strings.ReplaceAll(pwd, "\\", "/")
-		fileName := ""
-		if strings.HasSuffix(destDir, ".go") {
+
+		if strings.HasSuffix(inputDir, ".go") {
 			fileName = filepath.Base(destDir)
 		} else {
 			fileName = item.Name + ".go"
