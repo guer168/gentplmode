@@ -140,5 +140,5 @@ func main() {
 			return
 		}
 	}
-	fmt.Println("generate finished!")
+	fmt.Println("generate finished!!!")
 }
