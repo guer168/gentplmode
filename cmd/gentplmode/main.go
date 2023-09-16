@@ -55,7 +55,7 @@ func main() {
 		fileName = filepath.Base(destDir)
 		destDir = strings.ReplaceAll(inputDir, fileName, "")
 	}
-	fmt.Println("inputDir="+inputDir, "destDir="+destDir, "fileName="+fileName)
+	//fmt.Println("inputDir="+inputDir, "destDir="+destDir, "fileName="+fileName)
 	destDir = strings.TrimRight(destDir, "/")
 	inputDir = strings.TrimRight(inputDir, "/")
 	utils.MkdirPathIfNotExist(destDir)
@@ -107,7 +107,7 @@ func main() {
 			fileName = item.Name + ".go"
 		}
 		filePath := newPwd + "/" + destDir + "/" + fileName
-		fmt.Println("filePath="+filePath, "fileName="+fileName)
+		//fmt.Println("filePath="+filePath, "fileName="+fileName)
 		res, _ := utils.FileExists(filePath)
 		if res == true {
 			color.Blue("\nFile 【" + fileName + "】 already exists whether need to overwrite! Please enter (N/y):")
