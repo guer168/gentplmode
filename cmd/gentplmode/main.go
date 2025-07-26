@@ -140,5 +140,5 @@ func main() {
 			return
 		}
 	}
-	fmt.Println("generate finished!!!")
+	fmt.Printf("%v/%s generate finished!!!", destDir, fileName)
 }
