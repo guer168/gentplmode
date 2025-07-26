@@ -65,11 +65,11 @@ func main() {
 		return
 	}
 	if err := dbMetaData.ConnectionDB(dsn); err != nil {
-		fmt.Printf("connection db error: %#v", err)
+		fmt.Printf("connection db error: %#v\n", err)
 		return
 	}
 	if err := dbMetaData.SetFormatDriveEngine(formatDriveEngine); err != nil {
-		fmt.Printf("set the structure to drive the engine error: %#v", err)
+		fmt.Printf("set the structure to drive the engine error: %#v\n", err)
 		return
 	}
 	tables := db_meta_data.TableMetaDataList{}
@@ -79,7 +79,7 @@ func main() {
 		tables, err = dbMetaData.SpecifiedTables(tableNames)
 	}
 	if err != nil {
-		fmt.Printf("AllTableData err: %#v", err)
+		fmt.Printf("AllTableData err: %#v\n", err)
 		return
 	}
 	if packageName == "" {
@@ -87,7 +87,7 @@ func main() {
 	}
 	temp := templates.NewTemplate()
 	if err := temp.SetPath(templatePath); err != nil {
-		fmt.Printf("template path error: %#v", err)
+		fmt.Printf("template path error: %#v\n", err)
 		return
 	}
 	for _, item := range tables {
@@ -118,7 +118,7 @@ func main() {
 			}
 			overwriteType = strings.ToLower(overwriteType)
 			if overwriteType == "n" {
-				fmt.Printf("【" + fileName + "】 generate quit !!!")
+				fmt.Printf("【" + fileName + "】 generate quit !!!\n")
 				continue
 			} else {
 				utils.RemoveFile(filePath)
@@ -132,13 +132,13 @@ func main() {
 			fmt.Println(string(body))
 		}
 		if err != nil {
-			fmt.Printf("GenerateTemplate err: %#v", err.Error())
+			fmt.Printf("GenerateTemplate err: %#v\n", err.Error())
 			return
 		}
 		if err := utils.SaveFile(destDir, fileName, body); err != nil {
-			fmt.Printf("save file error: %#v", err)
+			fmt.Printf("save file error: %#v\n", err)
 			return
 		}
 	}
-	fmt.Printf("%v/%s generate finished!!!", destDir, fileName)
+	fmt.Printf("%s/%s generate finished!!!\n", destDir, fileName)
 }
