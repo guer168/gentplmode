@@ -116,7 +116,7 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) GetById(id int32) (*do.{{$un
 
 // Find 通过条件查找一条数据
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Find(where *do.Where{{$unPreTableNameUpper}}) (*do.{{$unPreTableNameUpper}}, error) {
-	ety := &do.User{}
+	ety := &do.{{$unPreTableNameUpper}}{}
 	db := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
 
 	{{- $first := true }}
@@ -192,7 +192,7 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) SearchPage(where *do.Where{{
 // QueryOne 通过sql查询单条数据
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) QueryOne(sql string) (*do.{{$unPreTableNameUpper}}, error) {
 	ety := &do.{{$unPreTableNameUpper}}{}
-	err := u.NewDb().Raw(sql).Scan(&ety).Error // 等价于 SQL 中添加了 LIMIT 1
+	err := {{$firstChar}}.NewDb().Raw(sql).Scan(&ety).Error // 等价于 SQL 中添加了 LIMIT 1
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -202,7 +202,7 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) QueryOne(sql string) (*do.{{
 // QueryMore 通过sql查询多条数据
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) QueryMore(sql string) ([]do.{{$unPreTableNameUpper}}, error) {
 	var items []do.{{$unPreTableNameUpper}}
-	err := u.NewDb().Raw(sql).Scan(&items).Error // 会返回所有符合条件的记录
+	err := {{$firstChar}}.NewDb().Raw(sql).Scan(&items).Error // 会返回所有符合条件的记录
 	if err != nil {
 		return nil, err
 	}
@@ -211,6 +211,6 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) QueryMore(sql string) ([]do.
 
 // Exec 执行不返回结果的 SQL
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Exec(sql string) error {
-	err := u.NewDb().Exec(sql).Error
+	err := {{$firstChar}}.NewDb().Exec(sql).Error
 	return err
 }
