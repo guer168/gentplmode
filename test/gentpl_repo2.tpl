@@ -28,7 +28,7 @@ func New{{$unPreTableNameUpper}}Repo() *{{$unPreTableNameUpper}}Repo {
 	return &{{$unPreTableNameUpper}}Repo{}
 }
 
-// GetSQL 获取最后sql
+// GetLastSql 获取最后sql
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) GetLastSql(db *gorm.DB) string {
     if db != nil {
 		return {{$firstChar}}.LastSQL(db)
