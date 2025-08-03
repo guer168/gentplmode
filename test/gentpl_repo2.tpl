@@ -15,146 +15,162 @@ package repo
 import (
 	"appgo/cmd/gin/entity/do"
 	"appgo/pkg/xcontent"
+	"errors"
 	"github.com/jinzhu/gorm"
 )
 
 type {{$unPreTableNameUpper}}Repo struct {
 	xcontent.XContext
+	db *gorm.DB
 }
 
 func New{{$unPreTableNameUpper}}Repo() *{{$unPreTableNameUpper}}Repo {
 	return &{{$unPreTableNameUpper}}Repo{}
 }
 
+// GetSQL 获取最后sql
+func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) GetLastSql(db *gorm.DB) string {
+    if db != nil {
+		return {{$firstChar}}.LastSQL(db)
+	}
+	return {{$firstChar}}.LastSQL({{$firstChar}}.db)
+}
+
 // Create 创建
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Create(data interface{}) error {
-	db := {{$firstChar}}.NewDb().Create(data)
-	if db.Error != nil {
-		return db.Error
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Create(data)
+	if {{$firstChar}}.db.Error != nil {
+		return {{$firstChar}}.db.Error
 	}
 	return nil
 }
 
 // DelById 通过id删除
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) DelById(id int32) (int64, error) {
-	db := {{$firstChar}}.NewDb().Delete(&do.{{$unPreTableNameUpper}}{}, "id = ?", id)
-	if db.Error != nil && db.Error != gorm.ErrRecordNotFound {
-		return 0, db.Error
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Delete(&do.{{$unPreTableNameUpper}}{}, "id = ?", id)
+	if {{$firstChar}}.db.Error != nil {
+		return 0, {{$firstChar}}.db.Error
 	}
-	return db.RowsAffected, nil
+	return {{$firstChar}}.db.RowsAffected, nil
 }
 
 // DelByIds 通过多id删除
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) DelByIds(ids []int32) (int64, error) {
-	db := {{$firstChar}}.NewDb().Delete(&do.{{$unPreTableNameUpper}}{}, "id in (?)", ids)
-	if db.Error != nil && db.Error != gorm.ErrRecordNotFound {
-		return 0, db.Error
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Delete(&do.{{$unPreTableNameUpper}}{}, "id in (?)", ids)
+	if {{$firstChar}}.db.Error != nil {
+		return 0, {{$firstChar}}.db.Error
 	}
-	return db.RowsAffected, nil
+	return {{$firstChar}}.db.RowsAffected, nil
 }
 
 // Del 通过多条件删除
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Del(where *do.Where{{$unPreTableNameUpper}}) (int64, error) {
-	db := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
 
 	{{- $first := true }}
     {{- range $index, $column := .Columns }}
         {{- if not $first }}
             if len(where.{{CamelizeStr .Name true }}) > 0 {
-                    db = db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
+                    {{$firstChar}}.db = {{$firstChar}}.db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
             }
         {{- end }}
         {{- $first = false }}
     {{- end }}
 
-	result := db.Delete(&do.{{$unPreTableNameUpper}}{})
-	if result.Error != nil {
-		return 0, result.Error
+	{{$firstChar}}.db = {{$firstChar}}.db.Delete(&do.{{$unPreTableNameUpper}}{})
+	if {{$firstChar}}.db.Error != nil {
+		return 0, {{$firstChar}}.db.Error
 	}
-	return result.RowsAffected, nil
+	return {{$firstChar}}.db.RowsAffected, nil
 }
 
 // UpdateById 通过id更新
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) UpdateById(id int32, updateMap map[string]interface{}) (int64, error) {
-	db := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{}).Where("id = ?", id).Updates(updateMap)
-	if db.Error != nil {
-		return 0, db.Error
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{}).Where("id = ?", id).Updates(updateMap)
+	if {{$firstChar}}.db.Error != nil {
+		return 0, {{$firstChar}}.db.Error
 	}
-	return db.RowsAffected, nil
+	return {{$firstChar}}.db.RowsAffected, nil
 }
 
 // Update 通过多条件更新
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Update(where *do.Where{{$unPreTableNameUpper}}, updateMap map[string]interface{}) (int64, error) {
-	db := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
 
 	{{- $first := true }}
     {{- range $index, $column := .Columns }}
         {{- if not $first }}
             if len(where.{{CamelizeStr .Name true }}) > 0 {
-                    db = db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
+                    {{$firstChar}}.db = {{$firstChar}}.db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
             }
         {{- end }}
         {{- $first = false }}
     {{- end }}
 
-	db = db.Updates(updateMap)
-	if db.Error != nil {
-		return 0, db.Error
+	{{$firstChar}}.db = {{$firstChar}}.db.Updates(updateMap)
+	if {{$firstChar}}.db.Error != nil {
+		return 0, {{$firstChar}}.db.Error
 	}
-	return db.RowsAffected, nil
+	return {{$firstChar}}.db.RowsAffected, nil
 }
 
 // GetById 通过id查找
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) GetById(id int32) (*do.{{$unPreTableNameUpper}}, error) {
 	ety := &do.{{$unPreTableNameUpper}}{}
-	err := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{}).Where("id = ?", id).First(&ety).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
-	}
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{}).Where("id = ?", id).First(&ety)
+	if {{$firstChar}}.db.Error != nil {
+        if errors.Is({{$firstChar}}.db.Error, gorm.ErrRecordNotFound) {
+            return nil, nil
+        }
+        return nil, {{$firstChar}}.db.Error
+    }
 	return ety, nil
 }
 
 // Find 通过条件查找一条数据
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Find(where *do.Where{{$unPreTableNameUpper}}) (*do.{{$unPreTableNameUpper}}, error) {
 	ety := &do.{{$unPreTableNameUpper}}{}
-	db := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
 
 	{{- $first := true }}
     {{- range $index, $column := .Columns }}
         {{- if not $first }}
             if len(where.{{CamelizeStr .Name true }}) > 0 {
-                    db = db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
+                    {{$firstChar}}.db = {{$firstChar}}.db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
             }
         {{- end }}
         {{- $first = false }}
     {{- end }}
 
-	err := db.First(&ety).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
-	}
+	{{$firstChar}}.db = {{$firstChar}}.db.First(&ety)
+	if {{$firstChar}}.db.Error != nil {
+        if errors.Is({{$firstChar}}.db.Error, gorm.ErrRecordNotFound) {
+            return nil, nil
+        }
+        return nil, {{$firstChar}}.db.Error
+    }
 	return ety, nil
 }
 
 // SearchList 搜索列表
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) SearchList(where *do.Where{{$unPreTableNameUpper}}) ([]do.{{$unPreTableNameUpper}}, error) {
 	var items []do.{{$unPreTableNameUpper}}
-	db := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
 
 
     {{- $first := true }}
     {{- range $index, $column := .Columns }}
         {{- if not $first }}
             if len(where.{{CamelizeStr .Name true }}) > 0 {
-            		db = db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
+            		{{$firstChar}}.db = {{$firstChar}}.db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
             }
         {{- end }}
         {{- $first = false }}
     {{- end }}
 
-	res := db.Order("id DESC").Find(&items)
-	if res.Error != nil {
-		return nil, res.Error
+	{{$firstChar}}.db = {{$firstChar}}.db.Order("id DESC").Find(&items)
+	if {{$firstChar}}.db.Error != nil {
+		return nil, {{$firstChar}}.db.Error
 	}
 	return items, nil
 }
@@ -165,21 +181,21 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) SearchPage(where *do.Where{{
 
     var count int64
 	var items []do.{{$unPreTableNameUpper}}
-	db := {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Model(&do.{{$unPreTableNameUpper}}{})
 
 
 	{{- $first := true }}
         {{- range $index, $column := .Columns }}
         {{- if not $first }}
             if len(where.{{CamelizeStr .Name true }}) > 0 {
-                db = db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
+                {{$firstChar}}.db = {{$firstChar}}.db.Where("{{.Name}} = ?", where.{{CamelizeStr .Name true }})
             }
         {{- end }}
         {{- $first = false }}
     {{- end }}
 
-	dbCount := db
-    dbList := db
+	dbCount := {{$firstChar}}.db
+    dbList := {{$firstChar}}.db
 
     dbCount.Count(count)
     res := dbList.Order("id DESC").Limit(limit).Offset(offset).Find(&items)
@@ -192,25 +208,28 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) SearchPage(where *do.Where{{
 // QueryOne 通过sql查询单条数据
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) QueryOne(sql string) (*do.{{$unPreTableNameUpper}}, error) {
 	ety := &do.{{$unPreTableNameUpper}}{}
-	err := {{$firstChar}}.NewDb().Raw(sql).Scan(&ety).Error // 等价于 SQL 中添加了 LIMIT 1
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
-	}
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Raw(sql).Scan(&ety) // 等价于 SQL 中添加了 LIMIT 1
+	if {{$firstChar}}.db.Error != nil {
+        if errors.Is({{$firstChar}}.db.Error, gorm.ErrRecordNotFound) {
+            return nil, nil
+        }
+        return nil, {{$firstChar}}.db.Error
+    }
 	return ety, nil
 }
 
 // QueryMore 通过sql查询多条数据
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) QueryMore(sql string) ([]do.{{$unPreTableNameUpper}}, error) {
 	var items []do.{{$unPreTableNameUpper}}
-	err := {{$firstChar}}.NewDb().Raw(sql).Scan(&items).Error // 会返回所有符合条件的记录
-	if err != nil {
-		return nil, err
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Raw(sql).Scan(&items) // 会返回所有符合条件的记录
+	if {{$firstChar}}.db.Error != nil {
+		return nil, {{$firstChar}}.db.Error
 	}
 	return items, nil
 }
 
 // Exec 执行不返回结果的 SQL
 func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Exec(sql string) error {
-	err := {{$firstChar}}.NewDb().Exec(sql).Error
-	return err
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Exec(sql)
+	return {{$firstChar}}.db.Error
 }
