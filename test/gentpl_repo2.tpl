@@ -37,8 +37,8 @@ func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) GetLastSql(db *gorm.DB) stri
 }
 
 // Create 创建
-func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Create(data interface{}) error {
-	{{$firstChar}}.db = {{$firstChar}}.NewDb().Create(data)
+func ({{$firstChar}} *{{$unPreTableNameUpper}}Repo) Create(data do.{{$unPreTableNameUpper}}) error {
+	{{$firstChar}}.db = {{$firstChar}}.NewDb().Create(&data)
 	if {{$firstChar}}.db.Error != nil {
 		return {{$firstChar}}.db.Error
 	}
